@@ -1,4 +1,4 @@
-# POC in Rust, where a desired programm is encrypted and will not work if replicated on a computer which is not authorised (it is better if you want to sell it for example)
+# POC in Rust, where a desired program is encrypted and will not work if replicated on a computer which is not authorised (it is better if you want to sell it for example)
 
 ## Should be used like:
 ### Create the crypted binary:
