@@ -2,7 +2,7 @@
 
 ## Should be used like:
 ### Create the crypted binary:
-cargo run executable_binary_to_encode new_name_of_crypted_binary
+cargo run executable_binary_to_encrypt new_name_of_crypted_binary
 
 ### Run the crypted binary:
 cargo run new_name_of_crypted_binary
