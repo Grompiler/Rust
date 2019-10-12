@@ -12,6 +12,7 @@ use std::option::Option;
 
 
 extern {
+    // using libc
     fn memset(s: *mut libc::c_void, c: u32, n: libc::size_t) -> *mut libc::c_void;
 }
 
@@ -41,7 +42,6 @@ impl JitMemory {
 
 impl Index<usize> for JitMemory {
     type Output = u8;
-
     fn index(&self, _index: usize) -> &u8 {
         unsafe {&*self.contents.offset(_index as isize) }
     }
@@ -144,8 +144,8 @@ fn main() ->io::Result<()> {
     let input_filename = &args[1];
     let bin = encrypt_binary(input_filename, None)?;
 
-    let fun = run_jit(&bin);
-    println!("{}", fun());
+    let func = run_jit(&bin);
+    println!("{}", func());
 
     Ok(())
 }
