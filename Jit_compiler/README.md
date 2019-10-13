@@ -12,3 +12,5 @@ cargo run new_name_of_crypted_binary
 The code will be decrypted and runned as an executable buffer of hexadecimal instructions, so that no copy can be easily made to use the software without permission
 
 Only the computer that did the encryption can run the crypted binary as it is decrypted using a hardware key (unique for each computer)
+
+Inspired from https://github.com/jonathandturner/rustyjit
