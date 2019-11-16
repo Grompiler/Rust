@@ -1,24 +1,28 @@
+pub trait WeaponMethods{
+    fn get_atk(&self) -> u8;
+    fn get_range(&self) -> u8;
 
-pub trait WeaponMethods {
-    fn new(atq: u8, weapon_type: WeaponType) -> Weapon;
 }
 
-pub struct Weapon {
-    pub atk: u8,
-    pub weapon_type: WeaponType,
-}
-
-pub enum WeaponType{
-    Sword,
-    Bow,
-    Stick,
+pub enum Weapon{
+    Sword(u8, u8),
+    Bow(u8, u8),
+    Stick(u8, u8),
 }
 
 impl WeaponMethods for Weapon {
-    fn new(atk: u8, weapon_type: WeaponType) -> Weapon {
-        Weapon {
-            atk: atk,
-            weapon_type: weapon_type,
+    fn get_atk(&self) -> u8 {
+        match self {
+            Weapon::Sword(atk, _) => *atk,
+            Weapon::Bow(atk, _) => *atk,
+            Weapon::Stick(atk, _) => *atk,
+        }
+    }
+    fn get_range(&self) -> u8 {
+        match self {
+            Weapon::Sword(_, range) => *range,
+            Weapon::Bow(_, range) => *range,
+            Weapon::Stick(_, range) => *range,
         }
     }
 }
