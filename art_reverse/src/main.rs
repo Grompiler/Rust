@@ -5,7 +5,7 @@ use std::io::prelude::*;
 use std::fs::File;
 
 fn main() -> std::io::Result<()> {
-    let file = File::open("./target/debug/pdf_worker")?;
+    let file = File::open("./target/debug/hello_world")?;
 
     let meta = file.metadata()?;
 
@@ -39,13 +39,13 @@ fn main() -> std::io::Result<()> {
             }
         }
     }
-    img_buf.save("prog1.png").unwrap();
+    img_buf.save("hello_world.png").unwrap();
     println!("x: {}", img_x);
     println!("y: {}", img_y);
     println!("len: {}", meta.len());
 
-    let png_reader = io::Reader::open("prog1.png")?.decode().unwrap();
-    let mut output = File::create("pdf_worker_revive")?;
+    let png_reader = io::Reader::open("hello_world.png")?.decode().unwrap();
+    let mut output = File::create("hello_world_revive")?;
     for (_x, _y, rgba) in png_reader.pixels() {
         match rgba[3] {
             255 => {
