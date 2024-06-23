@@ -1,35 +1,36 @@
 use image::*;
-
-use std::io::prelude::*;
-
 use std::fs::File;
+use std::io::prelude::*;
+use std::io::Result;
 
-fn main() -> std::io::Result<()> {
-    let file = File::open("./target/debug/hello_world")?;
+fn main() -> Result<()> {
+    let file_name = "./vendor.zip";
+    let image_name = "vendor.png";
+    let file_output_name = "output";
+    write_file_bits_to_png_image(file_name, image_name)?;
+    reconstruct_file_from_png_image(image_name, file_output_name)
+}
 
+fn write_file_bits_to_png_image(file_name: &str, image_name: &str) -> Result<()> {
+    let file = File::open(file_name)?;
     let meta = file.metadata()?;
+    let meta_len = meta.len() as f64;
+    let img_side_len = meta_len.sqrt().ceil() as u32;
 
-    let img_x = meta.len() as f64;
-    let img_x = img_x.sqrt() as u32;
-
-    let img_y = img_x + ((meta.len() as f64 / img_x as f64).ceil() - img_x as f64) as u32;
-
-    let mut file_iter = file.bytes();
-
-    let mut img_buf = ImageBuffer::new(img_x, img_y);
-
+    let mut file_bytes = file.bytes();
+    let mut img_buffer = ImageBuffer::new(img_side_len, img_side_len);
     let mut rgb_cpt = 0;
-    for (_x, _y, pixel) in img_buf.enumerate_pixels_mut() {
+    for (_x, _y, pixel) in img_buffer.enumerate_pixels_mut() {
         if (meta.len() - 3) > rgb_cpt {
             if let (Some(r), Some(g), Some(b)) =
-                (file_iter.next(), file_iter.next(), file_iter.next())
+                (file_bytes.next(), file_bytes.next(), file_bytes.next())
             {
                 *pixel = Rgba([r.unwrap(), g.unwrap(), b.unwrap(), 255]);
             }
             rgb_cpt += 3;
         } else {
-            if let Some(r) = file_iter.next() {
-                if let Some(g) = file_iter.next() {
+            if let Some(r) = file_bytes.next() {
+                if let Some(g) = file_bytes.next() {
                     *pixel = Rgba([r.unwrap(), g.unwrap(), 255, 2]);
                 } else {
                     *pixel = Rgba([r.unwrap(), 255, 255, 1]);
@@ -39,13 +40,16 @@ fn main() -> std::io::Result<()> {
             }
         }
     }
-    img_buf.save("hello_world.png").unwrap();
-    println!("x: {}", img_x);
-    println!("y: {}", img_y);
-    println!("len: {}", meta.len());
 
-    let png_reader = io::Reader::open("hello_world.png")?.decode().unwrap();
-    let mut output = File::create("hello_world_revive")?;
+    img_buffer.save(image_name).unwrap();
+
+    Ok(())
+}
+
+fn reconstruct_file_from_png_image(image_name: &str, file_output_name: &str) -> Result<()> {
+    let png_reader = io::Reader::open(image_name)?.decode().unwrap();
+    let mut output = File::create(file_output_name)?;
+
     for (_x, _y, rgba) in png_reader.pixels() {
         match rgba[3] {
             255 => {
